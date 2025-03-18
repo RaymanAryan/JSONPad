@@ -1,0 +1,43 @@
+JSONPad/
+│── app/
+│   ├── src/main/
+│   │   ├── java/com/example/jsonpad/
+|   |   |   ├── di/
+│   │   │   │   ├── AppModule.kt
+│   │   │   │   ├── DatabaseModule.kt
+│   │   │   │   ├── RepositoryModule.kt
+|   |   |   |   |--NoteDatabase
+│   │   │   ├── JsonPadApp.kt
+│   │   │   ├── data/
+│   │   │   │   ├── local/
+│   │   │   │   │   ├── Note.kt
+│   │   │   │   │   ├── NoteDao.kt
+│   │   │   │   │   ├── NoteViewModel.kt
+│   │   │   │   ├── repository/
+│   │   │   │   │   ├── NoteRepository.kt
+│   │   │   ├── ui/
+│   │   │   │   ├── theme/
+│   │   │   │   │   ├── Color.kt
+│   │   │   │   │   ├── Theme.kt
+│   │   │   │   │   ├── Type.kt
+│   │   │   │   ├── screens/
+│   │   │   │   │   ├── NoteListScreen.kt
+│   │   │   │   │   ├── NoteEditScreen.kt
+│   │   │   │   │   ├── ExportImportScreen.kt
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── NoteItem.kt
+│   │   │   │   │   ├── FloatingActionButton.kt
+│   │   │   │   ├── navigation/
+│   │   │   │   │   ├── NavGraph.kt
+│   │   │   ├── utils/
+│   │   │   │   ├── JsonHelper.kt
+│   │   │   │   ├── FileUtils.kt
+│   │   │   ├── viewmodel/
+│   │   │   │   ├── NoteViewModel.kt
+│   │   │   │   ├── ExportImportViewModel.kt
+│   │   │   ├── MainActivity.kt
+│   │   ├── res/
+│   │   │   ├── drawable/
+│   │   │   ├── values/
+│   ├── build.gradle
+│   ├── settings.gradle
