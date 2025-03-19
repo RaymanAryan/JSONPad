@@ -38,22 +38,24 @@ fun NoteNavGraph(navController: NavHostController, viewModel: NoteViewModel = hi
 
             val noteId = backStackEntry.arguments?.getString("noteId")
             // completed Toast.makeText(context, "Error: Note ID is missing!$noteId" , Toast.LENGTH_SHORT).show()
-            val noteState = viewModel.getNoteById(noteId ?: "")
-            val note by  noteState.collectAsState(initial = null)
+            val note by  viewModel.getNoteById(noteId ?: "").collectAsState(initial = null)
             var newNote by rememberSaveable { mutableStateOf<Note?>(null) }
 
 
-            if (note == null) {
-                LaunchedEffect(noteId) {
-                newNote = viewModel.addNote("", "", "") // Create a new empty note
+            LaunchedEffect(noteId, note) {
+                if (note == null) {
+                    newNote = viewModel.addNote("", "", "") // Create a new empty note
                     Toast.makeText(context, "Error: Note ID is missing!${newNote!!.title}" , Toast.LENGTH_SHORT).show()
                 }
             }
-            EditNoteScreen(
-                note = note ?: newNote, onNoteUpdated = { navController.popBackStack() },
-                viewModel = hiltViewModel(),
-                onBack = {navController.popBackStack()}
-            )
+
+            (note ?: newNote)?.let {
+                EditNoteScreen(
+                    note = it, onNoteUpdated = { navController.popBackStack() },
+                    viewModel = hiltViewModel(),
+                    onBack = {navController.popBackStack()}
+                )
+            }
         }
     }
 }
