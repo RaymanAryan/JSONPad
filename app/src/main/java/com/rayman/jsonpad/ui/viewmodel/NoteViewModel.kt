@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.data.repository.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -26,9 +27,9 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
         initialValue = emptyList()
     )
 
-    fun getNoteById(id: String): StateFlow<Note?> {
+    fun getNoteById(id: String): Flow<Note?> {
         return repository.allNotes
-            .map { notes -> notes.find { it.id.toString() == id } } as StateFlow<Note?>
+            .map { notes -> notes.find { it.id.toString() == id } }
     }
 
     fun updateNote(note: Note, title: String, content: String, category: String) = viewModelScope.launch {
