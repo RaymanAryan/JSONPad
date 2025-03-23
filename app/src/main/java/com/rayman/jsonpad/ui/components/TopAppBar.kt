@@ -1,6 +1,7 @@
 package com.rayman.jsonpad.ui.components
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -15,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
@@ -25,11 +27,9 @@ import kotlinx.coroutines.launch
 fun NoteTopBar(
     viewModel: NoteViewModel,
     viewModel2: SelectNoteViewModel,
-    allNotes: List<Note>?, selectedNotes: List<Note>, navDrawerState: DrawerState
-) {
-    if(allNotes != null){
-        val coroutine = rememberCoroutineScope()
-        TopAppBar(
+    allNotes: List<Note>, selectedNotes: List<Note>, navDrawerState: DrawerState
+) {     val coroutine = rememberCoroutineScope()
+        TopAppBar(modifier = Modifier,
             title = { Text(if (selectedNotes.isEmpty()) "My Notes" else "${selectedNotes.size} Selected") },
             navigationIcon = {
                 if (selectedNotes.isEmpty()) {
@@ -74,7 +74,6 @@ fun NoteTopBar(
                 }
             }
         )
-    }
 }
 
 

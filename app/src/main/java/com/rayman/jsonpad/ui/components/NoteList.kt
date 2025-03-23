@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,17 +19,12 @@ import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
 @Composable
 fun ToNoteList(
     viewModel: SelectNoteViewModel = hiltViewModel(),
-    notes: List<Note>?,
+    notes: List<Note>,
     selectedNotes: List<Note>, // Should store individual notes, not lists
     modifier: Modifier = Modifier,
     onNoteClick: (Note) -> Unit
 ) {
     when {
-        notes == null -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
         notes.isNotEmpty() -> {
             val selectedNotesSet = selectedNotes.toSet() // Optimize lookups
             LazyColumn(modifier = modifier) {

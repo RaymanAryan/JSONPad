@@ -37,18 +37,6 @@ fun NoteNavGraph(navController: NavHostController, viewModel: NoteViewModel = hi
 
         composable(route = "Help", content = {HelpScreen()})
 
-//        composable(
-//            route = "Categories/{category}",
-//            arguments = listOf(navArgument("category") { type = NavType.StringType })
-//        ) { backStackEntry ->
-//            val category = backStackEntry.arguments?.getString("category") ?: ""
-//            HomeScreen(
-//                viewModel = viewModel,
-//                onAddNote = { navController.navigate("editNote/new") },
-//                onNoteClick = { note -> navController.navigate("editNote/${note.id}") },
-//                navController =  navController)
-//        }
-
         composable(route = "About", content = {AboutScreen()})
 
         composable(

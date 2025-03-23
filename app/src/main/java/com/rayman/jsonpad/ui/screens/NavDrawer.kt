@@ -40,7 +40,6 @@ import com.rayman.jsonpad.ui.components.NoteListScreen
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
 import kotlinx.coroutines.launch
-import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +74,6 @@ fun HomeScreen(
                 )
                 categories.filter { it != "" }.distinct().forEach { category ->
                     DrawerItem(category, Icons.AutoMirrored.Filled.List) {
-                        Log.d("Page2",category)
                         scope.launch { drawerState.close() }
                         viewModel.setCategory(category)
                     }

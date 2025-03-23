@@ -9,27 +9,39 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class NoteViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel() {
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _currentCategory = MutableStateFlow<String?>(null)
     val currentCategory: StateFlow<String?> get() = _currentCategory  // ✅ Correct way to expose StateFlow
 
     fun setCategory(category: String?) {
-        _currentCategory.value = category  // ✅ Correct way to update MutableStateFlow
+        viewModelScope.launch {
+            _currentCategory.emit(category) // Prevents rapid updates from blocking UI
+        }
     }
 
-    private val _currentNotes = MutableStateFlow<List<Note>>(emptyList()) // ✅ MutableStateFlow for current notes
-    val currentNotes: StateFlow<List<Note>> get() = _currentNotes
+    val currentNotes: StateFlow<List<Note>> = repository.allNotes
+        .combine(_currentCategory) { notes, category ->
+            _isLoading.value = true  // Start loading when category changes
+            val filteredNotes = notes.filter { it.category == category || category == null }
+            _isLoading.value = false  // Stop loading after filtering
+            filteredNotes
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val allNotes: StateFlow<List<Note>?> = repository.allNotes.stateIn(
+    val allNotes: StateFlow<List<Note>> = repository.allNotes.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = null
+        initialValue = emptyList()
     )
 
     val allCategories: StateFlow<List<String>> = repository.allCategories.stateIn(
@@ -59,18 +71,6 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
 
     fun deleteNote(note: Note) = viewModelScope.launch {
         repository.deleteNote(note)
-    }
-
-    fun setNotesByCategory(category: String?) {
-            viewModelScope.launch {
-                repository.allNotes
-                    .map { notes ->
-                        notes.filter { it.category == category }
-                    }
-                    .collect { filteredNotes ->
-                        _currentNotes.value = filteredNotes
-                    }
-            }
     }
 }
 
