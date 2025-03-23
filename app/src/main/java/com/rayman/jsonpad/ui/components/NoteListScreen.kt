@@ -8,7 +8,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +25,6 @@ fun NoteListScreen(
     navDrawerState: DrawerState
 ) {
     val isLoading = viewModel.isLoading.collectAsState().value
-    val category = viewModel.currentCategory.collectAsState().value
     val notes = viewModel.currentNotes.collectAsState().value
 
 //    LaunchedEffect(key1 = category) {
@@ -52,7 +50,7 @@ fun NoteListScreen(
     ) { paddingValue ->
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(modifier = Modifier)
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize(.04f))
             }
         } else {
             ToNoteList(

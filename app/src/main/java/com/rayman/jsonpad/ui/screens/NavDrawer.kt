@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -62,8 +63,8 @@ fun HomeScreen(
 
                 // Home
                 DrawerItem("Home", Icons.Filled.Home) {
-                    scope.launch { drawerState.close() }
-                    viewModel.setCategory(null)
+                    scope.launch { closeDrawer(drawerState)
+                        viewModel.setCategory(null)}
                 }
 
                 // Categories Section
@@ -74,8 +75,8 @@ fun HomeScreen(
                 )
                 categories.filter { it != "" }.distinct().forEach { category ->
                     DrawerItem(category, Icons.AutoMirrored.Filled.List) {
-                        scope.launch { drawerState.close() }
-                        viewModel.setCategory(category)
+                        scope.launch { closeDrawer(drawerState)
+                            viewModel.setCategory(category)}
                     }
                 }
 
@@ -125,3 +126,6 @@ fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit) {
     }
 }
 
+suspend fun closeDrawer(drawerState: DrawerState){
+    drawerState.close()
+}

@@ -23,7 +23,7 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
     private val _currentCategory = MutableStateFlow<String?>(null)
     val currentCategory: StateFlow<String?> get() = _currentCategory  // ✅ Correct way to expose StateFlow
 
-    fun setCategory(category: String?) {
+    suspend fun setCategory(category: String?) {
         viewModelScope.launch {
             _currentCategory.emit(category) // Prevents rapid updates from blocking UI
         }
