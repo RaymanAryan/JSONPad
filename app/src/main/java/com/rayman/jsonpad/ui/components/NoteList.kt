@@ -6,41 +6,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
 
 @Composable
 fun ToNoteList(
-    viewModel: SelectNoteViewModel = hiltViewModel(),
+    viewModel: SelectNoteViewModel,
     notes: List<Note>,
     selectedNotes: List<Note>, // Should store individual notes, not lists
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     onNoteClick: (Note) -> Unit
 ) {
     when {
         notes.isNotEmpty() -> {
             val selectedNotesSet = selectedNotes.toSet() // Optimize lookups
-            LazyColumn(modifier = modifier) {
-                items(notes) { note ->
-                    NoteItem(
-                        note = note,
-                        isSelected = selectedNotesSet.contains(note),
-                        onLongPress = { viewModel.toggleSelection(note) },
-                        onClick = { onNoteClick(note) }
-                    )
+            Surface{
+                LazyColumn(modifier = modifier) {
+                    items(notes) { note ->
+                        NoteItem(
+                            note = note,
+                            isSelected = selectedNotesSet.contains(note),
+                            onLongPress = { viewModel.toggleSelection(note) },
+                            onClick = { onNoteClick(note) },
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }
         else -> {
             Box(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
                     .padding(16.dp), // Better spacing
                 contentAlignment = Alignment.Center

@@ -11,27 +11,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
 
 @Composable
 fun NoteListScreen(
-    viewModel: NoteViewModel = hiltViewModel(),
-    viewModel2: SelectNoteViewModel = hiltViewModel(),
+    viewModel: NoteViewModel,
+    viewModel2: SelectNoteViewModel,
     onAddNote: () -> Unit = {},
     onNoteClick: (Note) -> Unit = {},
     navDrawerState: DrawerState
 ) {
     val isLoading = viewModel.isLoading.collectAsState().value
     val notes = viewModel.currentNotes.collectAsState().value
-
-//    LaunchedEffect(key1 = category) {
-//        Log.d("Completed1", category.toString())
-//        viewModel.loadNotes()
-//    }
-
 
     val selectedNotes = viewModel2.selectedList.collectAsState().value
     Log.d("Complete2",notes.toString())
@@ -57,7 +50,8 @@ fun NoteListScreen(
                 notes = notes,
                 selectedNotes = selectedNotes,
                 modifier = Modifier.padding(paddingValue),
-                onNoteClick = onNoteClick
+                onNoteClick = onNoteClick,
+                viewModel = viewModel2
             )
         }
     }

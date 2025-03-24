@@ -15,11 +15,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.screens.AboutScreen
-import com.rayman.jsonpad.ui.screens.HomeScreen
 import com.rayman.jsonpad.ui.screens.EditNoteScreen
 import com.rayman.jsonpad.ui.screens.HelpScreen
+import com.rayman.jsonpad.ui.screens.HomeScreen
 import com.rayman.jsonpad.ui.screens.SettingsScreen
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
+
 
 @Composable
 fun NoteNavGraph(navController: NavHostController, viewModel: NoteViewModel = hiltViewModel()) {
@@ -33,11 +34,11 @@ fun NoteNavGraph(navController: NavHostController, viewModel: NoteViewModel = hi
             )
         }
 
-        composable(route = "settings", content = {SettingsScreen()})
+        composable(route = "Settings", content =  {SettingsScreen(title = "Settings",navController)})
 
-        composable(route = "Help", content = {HelpScreen()})
+        composable(route = "Help" ,content = {HelpScreen(title = "Help",navController)})
 
-        composable(route = "About", content = {AboutScreen()})
+        composable(route = "About") { AboutScreen(title = "About",navController)}
 
         composable(
             route = "editNote/{noteId}",
@@ -52,7 +53,7 @@ fun NoteNavGraph(navController: NavHostController, viewModel: NoteViewModel = hi
 
             LaunchedEffect(noteId, note) {
                 if (note == null) {
-                    newNote = viewModel.addNote("", "", "Default") // Create a new empty note
+                    newNote = viewModel.addNote("Untitled", "", "Default") // Create a new empty note
                 }
             }
 

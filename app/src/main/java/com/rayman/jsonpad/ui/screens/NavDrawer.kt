@@ -1,5 +1,6 @@
 package com.rayman.jsonpad.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -54,18 +55,28 @@ fun HomeScreen(
     val categories = viewModel.allCategories.collectAsState().value
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    BackHandler {
+        when {
+            drawerState.isOpen -> scope.launch { drawerState.close() }
+            !viewModel2.isEmpty() -> viewModel2.clearSelection()
+            else -> navController.popBackStack()
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)) {
-                Spacer(Modifier.fillMaxHeight(.03f))
+                Spacer(Modifier.fillMaxHeight(.04f))
+                // Divider
 
                 // Home
                 DrawerItem("Home", Icons.Filled.Home) {
                     scope.launch { closeDrawer(drawerState)
                         viewModel.setCategory(null)}
                 }
+                // Divider
+                HorizontalDivider()
 
                 // Categories Section
                 Text(

@@ -21,9 +21,8 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _currentCategory = MutableStateFlow<String?>(null)
-    val currentCategory: StateFlow<String?> get() = _currentCategory  // ✅ Correct way to expose StateFlow
 
-    suspend fun setCategory(category: String?) {
+    fun setCategory(category: String?) {
         viewModelScope.launch {
             _currentCategory.emit(category) // Prevents rapid updates from blocking UI
         }
@@ -31,18 +30,12 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
 
     val currentNotes: StateFlow<List<Note>> = repository.allNotes
         .combine(_currentCategory) { notes, category ->
-            _isLoading.value = true  // Start loading when category changes
+            _isLoading.emit(true)  // Start loading when category changes
             val filteredNotes = notes.filter { it.category == category || category == null }
-            _isLoading.value = false  // Stop loading after filtering
+            _isLoading.emit(false)  // Stop loading after filtering
             filteredNotes
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-    val allNotes: StateFlow<List<Note>> = repository.allNotes.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = emptyList()
-    )
 
     val allCategories: StateFlow<List<String>> = repository.allCategories.stateIn(
         scope = viewModelScope,

@@ -1,7 +1,6 @@
 package com.rayman.jsonpad.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +13,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rayman.jsonpad.data.local.Note
+import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,31 +32,41 @@ fun NoteItem(
     note: Note,
     isSelected: Boolean,
     onLongPress: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: SelectNoteViewModel
 ) {
-    val createdDate = formatTimestamp(note.createdAt)
-    val updatedDate = formatTimestamp(note.updatedAt)
-
+    val createdDate = rememberSaveable { formatTimestamp(note.createdAt) }
+    val updatedDate = rememberSaveable { formatTimestamp(note.updatedAt) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .combinedClickable(
-                onClick = onClick, // Navigate to Edit
-                onLongClick = onLongPress // Select/Deselect Note
-            )
-            .border(
-                width = if (isSelected) 2.dp else 0.dp,
-                color = if (isSelected) Color.Red else Color.Transparent,
-                shape = RoundedCornerShape(12.dp)
-            ),
+                onClick = { if (viewModel.isEmpty()) onClick() else onLongPress() }, // Navigate to Edit
+                onLongClick = { onLongPress() } // Select/Deselect Note
+            ),colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.primaryContainer,
+            contentColor = if (isSelected) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onPrimaryContainer,
+            disabledContainerColor = if (isSelected) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.primaryContainer,
+            disabledContentColor = if (isSelected) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onPrimaryContainer
+        ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = note.title, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = note.title,
+                style = MaterialTheme.typography.titleMedium,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = note.content, style = MaterialTheme.typography.bodyMedium, maxLines = 3)
+            Text(
+                text = note.content,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             Column(
@@ -101,6 +114,7 @@ private fun PreviewNoteItem() {
         note = sampleNote,
         isSelected = false,
         onLongPress = {},
-        onClick = {}
+        onClick = {},
+        viewModel = hiltViewModel()
     )
 }

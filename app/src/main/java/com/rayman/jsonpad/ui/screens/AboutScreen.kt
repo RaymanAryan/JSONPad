@@ -13,8 +13,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +25,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.navigation.NavHostController
+import com.rayman.jsonpad.ui.components.SimpleBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen() {
+fun AboutScreen(title: String, navigate: NavHostController) {
+    val coroutine = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("About") })
+            SimpleBar(title = title, navigate = navigate, coroutine = coroutine)
         }
     ) { paddingValues ->
         Surface(
@@ -43,7 +47,6 @@ fun AboutScreen() {
         }
     }
 }
-
 
 
 @Composable
@@ -58,7 +61,7 @@ fun About() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "About JSONPad",
+            text = "About JSONPad", textDecoration = TextDecoration.Underline,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -78,7 +81,7 @@ fun About() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "About the Developer",
+            text = "About the Developer",textDecoration = TextDecoration.Underline,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )

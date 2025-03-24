@@ -1,7 +1,6 @@
 package com.rayman.jsonpad.ui.components
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -10,9 +9,12 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -29,7 +31,13 @@ fun NoteTopBar(
     viewModel2: SelectNoteViewModel,
     allNotes: List<Note>, selectedNotes: List<Note>, navDrawerState: DrawerState
 ) {     val coroutine = rememberCoroutineScope()
-        TopAppBar(modifier = Modifier,
+        TopAppBar(modifier = Modifier, colors = TopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+        ),
             title = { Text(if (selectedNotes.isEmpty()) "My Notes" else "${selectedNotes.size} Selected") },
             navigationIcon = {
                 if (selectedNotes.isEmpty()) {
@@ -58,7 +66,16 @@ fun NoteTopBar(
                         }
                     }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            RadioButton(
+                            RadioButton(colors = RadioButtonColors(
+                                selectedColor =
+                                    MaterialTheme.colorScheme.tertiary,
+                                unselectedColor =
+                                    MaterialTheme.colorScheme.tertiaryContainer,
+                                disabledSelectedColor =
+                                    MaterialTheme.colorScheme.secondary,
+                                disabledUnselectedColor =
+                                    MaterialTheme.colorScheme.secondaryContainer
+                            ),
                                 selected = selectedNotes.size == allNotes.size,
                                 onClick = {
                                     if (selectedNotes.size == allNotes.size) {

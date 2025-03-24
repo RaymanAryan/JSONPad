@@ -30,18 +30,18 @@ class SelectNoteViewModel @Inject constructor() : ViewModel() {
 
     fun clearSelection() {
         viewModelScope.launch {
-            _selectedList.value = emptyList()  // Deselect all notes
+            _selectedList.emit(emptyList())  // Deselect all notes
         }
     }
 
     fun selectAll(notes: List<Note>) {
         viewModelScope.launch {
-            _selectedList.value = notes  // Select all notes
+            _selectedList.emit(notes)  // Select all notes
         }
     }
 
-    fun isSelected(note: Note): Boolean {
-        return _selectedList.value.contains(note)
+    fun isEmpty(): Boolean {
+        return selectedList.value.isEmpty()
     }
 }
 
