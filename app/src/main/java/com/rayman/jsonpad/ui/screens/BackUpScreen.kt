@@ -2,21 +2,26 @@ package com.rayman.jsonpad.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.rayman.jsonpad.ui.components.JsonScreen
 import com.rayman.jsonpad.ui.components.SimpleBar
+import com.rayman.jsonpad.ui.viewmodel.JsonViewModel
+import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(title: String, navigate: NavHostController) {
+fun BackUpScreen(
+    title: String,
+    navigate: NavHostController,
+    jsonViewModel: JsonViewModel,
+    noteViewModel: NoteViewModel
+) {
     val coroutine = rememberCoroutineScope()
 
     Scaffold(
@@ -29,12 +34,7 @@ fun SettingsScreen(title: String, navigate: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Settings()
+            JsonScreen(noteViewModel = noteViewModel, jsonViewModel = jsonViewModel)
         }
     }
-}
-
-@Composable
-fun Settings() {
-    Text("Settings", modifier = Modifier.size(79.dp))
 }

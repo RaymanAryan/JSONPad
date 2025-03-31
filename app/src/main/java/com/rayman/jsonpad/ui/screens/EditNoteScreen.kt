@@ -21,49 +21,61 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
+import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(
     note: Note?,
-    viewModel: NoteViewModel = hiltViewModel(),
+    noteViewModel: NoteViewModel,
     onBack: () -> Unit,
     onNoteUpdated: () -> Unit
 ) {
-    var title by rememberSaveable { mutableStateOf(note!!.title) }
-    var content by rememberSaveable { mutableStateOf(note!!.content) }
-    var category by rememberSaveable { mutableStateOf(note!!.category) }
+    var title by rememberSaveable { mutableStateOf(note?.title ?: "") }
+    var content by rememberSaveable { mutableStateOf(note?.content ?: "") }
+    var category by rememberSaveable { mutableStateOf(note?.category ?: "") }
+    val coroutine = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("EditNoteScreen") }, colors = TopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    scrolledContainerColor = MaterialTheme.colorScheme.primary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+                title = { Text("Edit Note") },
+                colors = TopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        if (title.isNotBlank() || content.isNotBlank() || category.isNotBlank()) {
+                    IconButton(
+                        onClick = {
                             note?.let {
-                                viewModel.updateNote(note,title,content,category)
-                                onNoteUpdated()}
+                                coroutine.launch {
+                                    noteViewModel.updateNote(
+                                        note,
+                                        title,
+                                        content,
+                                        category
+                                    )
+                                    onNoteUpdated()
+                                }
+                            }
                         }
-                    }) {
+                    ) {
                         Icon(imageVector = Icons.Default.Check, contentDescription = "Save")
                     }
                 }

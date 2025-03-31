@@ -18,7 +18,7 @@ import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
 
 @Composable
 fun ToNoteList(
-    viewModel: SelectNoteViewModel,
+    selectNoteViewModel: SelectNoteViewModel,
     notes: List<Note>,
     selectedNotes: List<Note>, // Should store individual notes, not lists
     modifier: Modifier,
@@ -33,9 +33,9 @@ fun ToNoteList(
                         NoteItem(
                             note = note,
                             isSelected = selectedNotesSet.contains(note),
-                            onLongPress = { viewModel.toggleSelection(note) },
+                            onLongPress = { selectNoteViewModel.toggleSelection(note) },
                             onClick = { onNoteClick(note) },
-                            viewModel = viewModel
+                            selectNoteViewModel = selectNoteViewModel
                         )
                     }
                 }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -58,12 +59,25 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
         repository.updateNote(note)
     }
 
-    suspend fun addNote(title: String, content: String, category: String): Note {
-        return repository.addNote(title, content, category)
+    suspend fun addNote(note: Note): Note {
+        return repository.addNote(note)
     }
 
     fun deleteNote(note: Note) = viewModelScope.launch {
         repository.deleteNote(note)
+    }
+
+    fun getAllNotes(): Flow<List<Note>> {
+        return repository.allNotes
+    }
+
+    suspend fun importNoteFromJson(note: Note){
+        val toUpdate: Boolean = getNoteById(note.id.toString()).firstOrNull() != null
+        if (toUpdate) {
+            updateNote(note, note.title, note.content, note.category)
+        } else {
+            addNote(note)
+        }
     }
 }
 

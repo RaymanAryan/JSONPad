@@ -11,12 +11,7 @@ class NoteRepository @Inject constructor(private val noteDao: NoteDao) {
     val allNotes: Flow<List<Note>> = noteDao.getAllByDescCreatedAt() // Using the sorted query
     val allCategories: Flow<List<String>> = noteDao.getCategories()
 
-    suspend fun getNoteById(id: String): Note? {
-        return noteDao.getNoteById(id)
-    }
-
-    suspend fun addNote(title: String, content: String, category: String): Note {
-        val note = Note(title = title, content = content, category = category, updatedAt = System.currentTimeMillis())
+    suspend fun addNote(note: Note): Note {
         return noteDao.insertAndReturnNote(note)
     }
 

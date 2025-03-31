@@ -1,6 +1,5 @@
 package com.rayman.jsonpad.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,27 +13,28 @@ import androidx.compose.ui.Modifier
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
+import com.rayman.jsonpad.ui.viewmodel.UIViewModel
 
 @Composable
 fun NoteListScreen(
-    viewModel: NoteViewModel,
-    viewModel2: SelectNoteViewModel,
+    noteViewModel: NoteViewModel,
+    selectNoteViewModel: SelectNoteViewModel,
     onAddNote: () -> Unit = {},
     onNoteClick: (Note) -> Unit = {},
-    navDrawerState: DrawerState
+    navDrawerState: DrawerState,
+    uiViewModel: UIViewModel
 ) {
-    val isLoading = viewModel.isLoading.collectAsState().value
-    val notes = viewModel.currentNotes.collectAsState().value
+    val isLoading = noteViewModel.isLoading.collectAsState().value
+    val notes = noteViewModel.currentNotes.collectAsState().value
 
-    val selectedNotes = viewModel2.selectedList.collectAsState().value
-    Log.d("Complete2",notes.toString())
-
+    val selectedNotes = selectNoteViewModel.selectedList.collectAsState().value
     Scaffold(
         topBar = {
             NoteTopBar(
                 selectedNotes = selectedNotes,
-                viewModel = viewModel,
-                viewModel2 = viewModel2,
+                noteViewModel = noteViewModel,
+                uiViewModel = uiViewModel,
+                selectNoteViewModel = selectNoteViewModel,
                 allNotes = notes,
                 navDrawerState = navDrawerState
             )
@@ -51,7 +51,7 @@ fun NoteListScreen(
                 selectedNotes = selectedNotes,
                 modifier = Modifier.padding(paddingValue),
                 onNoteClick = onNoteClick,
-                viewModel = viewModel2
+                selectNoteViewModel = selectNoteViewModel
             )
         }
     }

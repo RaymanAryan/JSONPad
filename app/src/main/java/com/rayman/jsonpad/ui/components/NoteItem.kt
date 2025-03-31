@@ -17,7 +17,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rayman.jsonpad.data.local.Note
@@ -33,7 +32,7 @@ fun NoteItem(
     isSelected: Boolean,
     onLongPress: () -> Unit,
     onClick: () -> Unit,
-    viewModel: SelectNoteViewModel
+    selectNoteViewModel: SelectNoteViewModel = hiltViewModel()
 ) {
     val createdDate = rememberSaveable { formatTimestamp(note.createdAt) }
     val updatedDate = rememberSaveable { formatTimestamp(note.updatedAt) }
@@ -42,7 +41,7 @@ fun NoteItem(
             .fillMaxWidth()
             .padding(8.dp)
             .combinedClickable(
-                onClick = { if (viewModel.isEmpty()) onClick() else onLongPress() }, // Navigate to Edit
+                onClick = { if (selectNoteViewModel.isEmpty()) onClick() else onLongPress() }, // Navigate to Edit
                 onLongClick = { onLongPress() } // Select/Deselect Note
             ),colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.primaryContainer,
@@ -96,25 +95,4 @@ fun formatTimestamp(timestamp: Long?): String {
 
     val sdf = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()) // "07 Jul 2024, 05:30 PM"
     return sdf.format(Date(timestamp))
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PreviewNoteItem() {
-    val sampleNote = Note(
-        id = 123,
-        title = "Sample Note",
-        content = "This is a preview note content.",
-        category = "Personal",
-        createdAt = System.currentTimeMillis() - 86400000, // 1 day ago
-        updatedAt = System.currentTimeMillis()
-    )
-
-    NoteItem(
-        note = sampleNote,
-        isSelected = false,
-        onLongPress = {},
-        onClick = {},
-        viewModel = hiltViewModel()
-    )
 }

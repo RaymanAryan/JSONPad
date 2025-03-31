@@ -22,14 +22,16 @@ import androidx.compose.ui.Modifier
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
+import com.rayman.jsonpad.ui.viewmodel.UIViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteTopBar(
-    viewModel: NoteViewModel,
-    viewModel2: SelectNoteViewModel,
-    allNotes: List<Note>, selectedNotes: List<Note>, navDrawerState: DrawerState
+    noteViewModel: NoteViewModel,
+    selectNoteViewModel: SelectNoteViewModel,
+    allNotes: List<Note>, selectedNotes: List<Note>, navDrawerState: DrawerState,
+    uiViewModel: UIViewModel,
 ) {     val coroutine = rememberCoroutineScope()
         TopAppBar(modifier = Modifier, colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -45,7 +47,7 @@ fun NoteTopBar(
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
                 } else {
-                    IconButton(onClick = { viewModel2.clearSelection() }) {
+                    IconButton(onClick = { selectNoteViewModel.clearSelection() }) {
                         Icon(Icons.Default.Close, contentDescription = "Deselect All")
                     }
                 }
@@ -53,16 +55,16 @@ fun NoteTopBar(
             actions = {
                 if (selectedNotes.isNotEmpty()) {
                     IconButton(onClick = {
-                        selectedNotes.forEach { viewModel.deleteNote(it) }
-                        viewModel2.clearSelection()
+                        selectedNotes.forEach { noteViewModel.deleteNote(it) }
+                        selectNoteViewModel.clearSelection()
                     }) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete Selected Notes")
                     }
                     IconButton(onClick = {
                         if (selectedNotes.size == allNotes.size) {
-                            viewModel2.clearSelection()
+                            selectNoteViewModel.clearSelection()
                         } else {
-                            viewModel2.selectAll(allNotes)
+                            selectNoteViewModel.selectAll(allNotes)
                         }
                     }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -79,9 +81,9 @@ fun NoteTopBar(
                                 selected = selectedNotes.size == allNotes.size,
                                 onClick = {
                                     if (selectedNotes.size == allNotes.size) {
-                                        viewModel2.clearSelection()
+                                        selectNoteViewModel.clearSelection()
                                     } else {
-                                        viewModel2.selectAll(allNotes)
+                                        selectNoteViewModel.selectAll(allNotes)
                                     }
                                 }
                             )
@@ -89,15 +91,12 @@ fun NoteTopBar(
                         }
                     }
                 }
+                else {
+                    MoreOptionsMenu(uiViewModel)
+                }
             }
         )
 }
 
 
 
-
-//@Preview
-//@Composable
-//private fun PreviewNoteTopBar() {
-//    NoteTopBar()
-//}

@@ -35,30 +35,31 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.rayman.jsonpad.data.local.Note
 import com.rayman.jsonpad.ui.components.NoteListScreen
 import com.rayman.jsonpad.ui.viewmodel.NoteViewModel
 import com.rayman.jsonpad.ui.viewmodel.SelectNoteViewModel
+import com.rayman.jsonpad.ui.viewmodel.UIViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: NoteViewModel = hiltViewModel(),
-    viewModel2: SelectNoteViewModel = hiltViewModel(),
     onAddNote: () -> Unit = {},
-    onNoteClick: (Note) -> Unit = {}
+    onNoteClick: (Note) -> Unit = {},
+    noteViewModel: NoteViewModel,
+    selectNoteViewModel: SelectNoteViewModel,
+    uiViewModel: UIViewModel
 ) {
-    val categories = viewModel.allCategories.collectAsState().value
+    val categories = noteViewModel.allCategories.collectAsState().value
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     BackHandler {
         when {
             drawerState.isOpen -> scope.launch { drawerState.close() }
-            !viewModel2.isEmpty() -> viewModel2.clearSelection()
+            !selectNoteViewModel.isEmpty() -> selectNoteViewModel.clearSelection()
             else -> navController.popBackStack()
         }
     }
@@ -73,7 +74,7 @@ fun HomeScreen(
                 // Home
                 DrawerItem("Home", Icons.Filled.Home) {
                     scope.launch { closeDrawer(drawerState)
-                        viewModel.setCategory(null)}
+                        noteViewModel.setCategory(null)}
                 }
                 // Divider
                 HorizontalDivider()
@@ -87,7 +88,7 @@ fun HomeScreen(
                 categories.filter { it != "" }.distinct().forEach { category ->
                     DrawerItem(category, Icons.AutoMirrored.Filled.List) {
                         scope.launch { closeDrawer(drawerState)
-                            viewModel.setCategory(category)}
+                            noteViewModel.setCategory(category)}
                     }
                 }
 
@@ -95,9 +96,9 @@ fun HomeScreen(
                 HorizontalDivider()
 
                 // Settings & Help
-                DrawerItem("Settings", Icons.Filled.Settings) {
+                DrawerItem("Backup", Icons.Filled.Settings) {
                     scope.launch { drawerState.close() }
-                    navController.navigate("Settings")
+                    navController.navigate("Backup")
                 }
                 DrawerItem("Help", Icons.Filled.Info) {
                     scope.launch { drawerState.close() }
@@ -114,8 +115,9 @@ fun HomeScreen(
                 onAddNote = onAddNote,
                 onNoteClick = onNoteClick,
                 navDrawerState = drawerState,
-                viewModel = viewModel,
-                viewModel2 = viewModel2
+                noteViewModel = noteViewModel,
+                selectNoteViewModel = selectNoteViewModel,
+                uiViewModel = uiViewModel
             )
         }
     )
