@@ -27,10 +27,7 @@ We welcome contributions! To get started:
 3. Commit your changes (`git commit -m 'Add new feature'`).
 4. Push to the branch (`git push origin feature-branch`).
 5. Open a Pull Request.
-
-## License
-JSONPad is licensed under the MIT License.
-
+   
 ## Contact
 For feedback and support, reach out at rayma666n@gmail.com or open an issue on the repository.
 
